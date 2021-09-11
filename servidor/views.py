@@ -1,5 +1,5 @@
 import time
-from utils1 import load_data, load_template, save_SQL,update_SQL,delete_SQL
+from utils import load_data, load_template, save_SQL,update_SQL,delete_SQL
 import database
 from os import error, replace
 import urllib

@@ -1,4 +1,12 @@
+from database import Note
+import database
 import json
+import time
+
+def extract_obj_attributes(object):
+    return vars(object)
+
+
 
 def extract_route(request):
     extracted = request.split()[1]
@@ -11,7 +19,7 @@ def read_file(path):
 
 
     if path_S[-3:] == ".css" or path_S[-3:] == ".txt" or path_S[-3:] == "html" or path_S[-2:] == ".js":
-        with open("../"+path,'r') as file:
+        with open("../"+path,'r', encoding="utf-8") as file:
             archive = file.read()
             
     else:
@@ -20,26 +28,30 @@ def read_file(path):
 
     return archive
 
-def load_data(path):
-    with open("data/"+path,"rt", encoding="utf-8") as file:
-
-        texto =  json.loads(file.read())
-    return texto
+def load_data(database,type):
+    
+    data = database.get_all(type)
+    return data
 
 def load_template(path):
-    with open ("templates/"+path,"r") as file:
+    with open ("templates/"+path,"r",encoding="utf-8") as file:
         texto = file.read()
     return texto
 
-def save_json(params,path):
-    param_json = json.dumps([params])[2:]
-    ancientFile = ""
-    with open(path,"r") as file:
-        ancientFile = file.read()
-    ancientFile = ancientFile.replace("]",",{ \n")
+def save_SQL(params,database):
+   title = params["titulo"]
+   details = params["detalhes"]
+   notes = Note(title = title, details = details)
+   database.add(notes)
 
-    with open(path,"w" ) as file:
-        file.truncate(0)
-        file.writelines(ancientFile)
-        file.writelines(param_json)
-         
+def update_SQL(params,database):
+    id = str(params["id"])
+    title = str(params["titulo"])
+    details = str(params["detalhes"])
+    notes = Note(id=id,title=title,details=details)
+    database.update(notes)
+
+def delete_SQL(id,database):
+    database.delete(str(id))
+    
+   
